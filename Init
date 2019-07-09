@@ -1,0 +1,91 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Jul  9 10:16:34 2019
+
+@author: WangYisi
+"""
+
+#定义一个红黑树的数据结构
+class Red_Black_TreeNode:
+    def __init__(self, x ,c):
+        self.val = x
+        self.color = c
+        self.left = None
+        self.right = None
+
+#将输入list转化为一棵红黑树结构,例如[(4,'b'),(2,'r'),(5,'r'),(1,'b'),(3,'b'),('NIL','b'),(6,'b'),('NIL','b'),('NIL','b'),('NIL','b'),('NIL','b'),None,None,('NIL','b'),('NIL','b')]
+def ListToRed_Black_TreeNode(input_list):
+    if not input_list:
+        return None
+    root_ = input_list[0]
+    root = Red_Black_TreeNode(int(root_[0]),str(root_[1]))
+    nodeQueue = [root]
+    #快慢指针法
+    front = 0
+    index = 1
+    while index < len(input_list):
+        node = nodeQueue[front]
+        front += 1
+        
+        item = input_list[index]
+        index +=1
+        if item != None:
+            node.left = Red_Black_TreeNode(item[0],item[1])
+            nodeQueue.append(node.left)
+        if index >= len(input_list):
+            break
+        
+        item = input_list[index]
+        index += 1
+        if item != None:
+            node.right = Red_Black_TreeNode(item[0],item[1])
+            nodeQueue.append(node.right)
+    return root
+
+#判断一棵红黑树是否满足所有性质，返回True或Fasle情形，见《算法导论》P174性质1~5
+def Determine_RBTree(root):
+    #性质2：根节点必须为黑色
+    if root.color == 'r':
+        return 'False2'
+    #性质3：每个叶节点是黑色的
+    def leaf_NIL(r):
+        if r.left == None and r.right == None and r.val == 'NIL' and r.color == 'r':
+            return 'False3'
+        elif r.left == None and r.right == None and r.val == 'NIL' and r.color == 'b':
+            continue
+        elif r.left != None:
+            leaf_NIL(r.left)
+        elif r.right != None:
+            leaf_NIL(r.right)
+        return True
+    if leaf_NIL(root) == True:
+        continue
+    else:
+        return leaf_NIL(root)
+    #性质4：如果一个节点是红色的，则它的两个子节点必须为黑色
+    def node_color(r):
+        if r.color == 'b':
+            continue
+        elif r.color == 'r' and r.left != None:
+            r_left = r.left
+            if r_left.color == 'r':
+                return 'False4'
+            else:
+                node_color(r_left)
+        elif r.color == 'r' and r.right != None:
+            r_right = r.right
+            if r_left.color == 'r':
+                return 'False4'
+            else:
+                node_color(r_right)
+        elif r.left == None and r.right == None:
+            continue
+        return True
+    if node_color(root) == True:
+        continue
+    else:
+        return node_color(root)
+    #性质5：对每个节点，从该节点到其所有后代叶节点的简单路径上，均包含相同数目的黑色结点
+    
+        
+            
